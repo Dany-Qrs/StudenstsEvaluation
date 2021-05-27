@@ -3,6 +3,10 @@
 /*Present statistics for a section of 20 students:
 min, max, avg, most repeated, less repeated.
  We need to input your name and your evaluation result*/
+import java.io.File;
+import java.io.FileWriter;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +32,7 @@ public class StudentsEvaluation {
     public static void main(String[] args){
         //printWelcome();
         Scanner scan = new Scanner(System.in);
-        System.out.print("Números de alumnos: \t");
+        System.out.print("Cantidad de alumnos: \t");
         int numStudents = scan.nextInt();
         Map<Integer, Map> students = new HashMap<Integer, Map>();
         int iterator = 1;
@@ -37,17 +41,29 @@ public class StudentsEvaluation {
             Map<String, Double> student = new HashMap<String, Double>();
             String name; Double score;
             System.out.println("_________________________________________________");
-            System.out.print("Estudent: ");
+            System.out.print("Estudiante: ");
             name =  scan.next();
-            System.out.print("Score: ");
+            System.out.print("Puntuación: ");
             score = scan.nextDouble();
             student.put(name, score);
             students.put(iterator, student);
             iterator ++;
         }
 
-
-
-        System.out.println(students);
+        System.out.println("¿Desea guardar los datos en un archivo de texto? presiona y/n");
+        if(scan.next().equals("y")){
+            try {
+                FileWriter dataFile = new FileWriter("nuevo.txt");
+                for(Map.Entry<Integer, Map> entry: students.entrySet()){
+                    for(Object r: entry.getValue().entrySet()){
+                        System.out.println();
+                        dataFile.write(r.toString()+"\n");
+                    }
+                }
+                dataFile.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

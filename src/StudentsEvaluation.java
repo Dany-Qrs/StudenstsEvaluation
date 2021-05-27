@@ -7,14 +7,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class StudentsEvaluation {
-    public static void printWelcome(){
+    public static void welcomePrint(){
         StringBuilder myWelcome = new StringBuilder();
         myWelcome.append(" _  _    ____    ___      _     ___     ____\n");
         myWelcome.append("| |/ /  | || |  |  _ \\   | |  /  _  \\  | || |\n");
@@ -34,19 +30,21 @@ public class StudentsEvaluation {
         Scanner scan = new Scanner(System.in);
         System.out.print("Cantidad de alumnos: \t");
         int numStudents = scan.nextInt();
-        Map<Integer, Map> students = new HashMap<Integer, Map>();
+        List<String> names = new ArrayList<>();
+        List<Double> scores = new ArrayList<>();
+        Double minScore;
+        Double maxScore;
+        Double avgScore;
+        Double mostRepeatScore;
+        Double lessRepeatScore;
         int iterator = 1;
 
         while (iterator <= numStudents){
-            Map<String, Double> student = new HashMap<String, Double>();
-            String name; Double score;
             System.out.println("_________________________________________________");
             System.out.print("Estudiante: ");
-            name =  scan.next();
+            names.add(scan.next());
             System.out.print("Puntuación: ");
-            score = scan.nextDouble();
-            student.put(name, score);
-            students.put(iterator, student);
+            scores.add(scan.nextDouble());
             iterator ++;
         }
 
@@ -54,12 +52,25 @@ public class StudentsEvaluation {
         if(scan.next().equals("y")){
             try {
                 FileWriter dataFile = new FileWriter("nuevo.txt");
-                for(Map.Entry<Integer, Map> entry: students.entrySet()){
-                    for(Object r: entry.getValue().entrySet()){
-                        System.out.println();
-                        dataFile.write(r.toString()+"\n");
-                    }
+                Iterator<String> name = names.iterator();
+                Iterator<Double> score = scores.iterator();
+                Double acumAvg = 0.0;
+                Double[] mostRepeat;
+                for(int i=0; i< scores.size(); i++){
+                    System.out.println(scores.get(i));
                 }
+                StringBuilder bodyInfo = new StringBuilder();
+                bodyInfo.append("Student Score\n");
+                while (name.hasNext() && score.hasNext()){
+                    bodyInfo.append(name.next()+" ");
+                    bodyInfo.append(score.next()+"\n");
+                }
+                avgScore = acumAvg / numStudents;
+
+                bodyInfo.append("\nSTADISTICS\n");
+                bodyInfo.append("Avg: "+avgScore+"\t");
+
+                dataFile.write(bodyInfo.toString());
                 dataFile.close();
             } catch (IOException e) {
                 e.printStackTrace();

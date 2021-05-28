@@ -23,6 +23,7 @@ public class StudentsEvaluation {
         myWelcome.append("|_|\\_\\  |____|  |____/   |_|   \\____/  |____|\n");
         System.out.println(myWelcome);
     }
+    
     public static void infoRequest(int numStudents,List<String> names, List<Double> scores){
         Scanner scan = new Scanner(System.in);
         int iterator = 0;
@@ -35,6 +36,7 @@ public class StudentsEvaluation {
             iterator ++;
         }
     }
+
     public static List arraySort(int numStudents, List<Double> scores){
         List<Double> scoreSort = new ArrayList<>();
         Double[] scoreAux = new Double[numStudents];
@@ -51,6 +53,7 @@ public class StudentsEvaluation {
         }
         return scoreSort;
     }
+
     public static double avgFind(int numStudents,List<Double> scores){
         double avg = 0;
         for(double score: scores){
@@ -58,6 +61,7 @@ public class StudentsEvaluation {
         }
         return avg / numStudents;
     }
+
     public static StringBuilder repeatFind(List<Double> scores){
         StringBuilder bodyInfo = new StringBuilder();
         Map<Double, Integer> repeatScore = new HashMap<>();
@@ -79,35 +83,34 @@ public class StudentsEvaluation {
         bodyInfo.append("Less repeat: "+minScoreRepeat+ "\n");
         return bodyInfo;
     }
-   /* public static void general(){
-        Map<Double, Integer> repeatScore = new HashMap<>();
 
-
-        System.out.println("¿Desea guardar los datos en un archivo de texto? presiona y/n");
-        if(scan.next().equals("y")){
-            try {
-                FileWriter dataFile = new FileWriter("nuevo.txt");
-                Iterator<String> name = names.iterator();
-                Iterator<Double> score = scores.iterator();
-
-                StringBuilder bodyInfo = new StringBuilder();
-                bodyInfo.append("Student Score\n");
-                while (name.hasNext() && score.hasNext()){
-                    bodyInfo.append(name.next()+" ");
-                    bodyInfo.append(score.next()+"\n");
-                }
-                bodyInfo.append("\nSTADISTICS\n");
-                bodyInfo.append("Avg: "+avgScore+"\t");
-                bodyInfo.append("Min: "+minScore+"\t");
-                bodyInfo.append("Max: "+maxScore+"\t");
-
-                dataFile.write(bodyInfo.toString());
-                dataFile.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public static StringBuilder infoBuilder(List<String> names, List<Double> scores, double maxScore, double minScore, double avgScore, String repeatScore){
+        StringBuilder bodyInfo = new StringBuilder();
+        Iterator<String> name = names.iterator();
+        Iterator<Double> score = scores.iterator();
+        bodyInfo.append("STUDENTS SCORES\n");
+        while (name.hasNext() && score.hasNext()){
+            bodyInfo.append(name.next()+" ");
+            bodyInfo.append(score.next()+"\n");
         }
-    }*/
+        bodyInfo.append("\nSTADISTICS\n");
+        bodyInfo.append("Avg: "+avgScore+"\t");
+        bodyInfo.append("Min: "+minScore+"\t");
+        bodyInfo.append("Max: "+maxScore+"\t");
+        bodyInfo.append(repeatScore);
+        return bodyInfo;
+    }
+
+    public static  void generateFile(List<String> names, List<Double> scores, double maxScore, double minScore, double avgScore, String repeatScore){
+        try {
+            FileWriter dataFile = new FileWriter("nuevo.txt");
+            dataFile.write(infoBuilder(names, scores, maxScore, minScore, avgScore, repeatScore).toString());
+            dataFile.close();
+        } catch (Exception e) {
+            System.out.println("Se produjo un error al generar el archivo: "+e.getMessage());
+        }
+    }
+
     public static void main(String[] args){
         Scanner scan = new Scanner(System.in);
         List<Double> scores = new ArrayList<>();
@@ -124,7 +127,6 @@ public class StudentsEvaluation {
         minScore = scoreSort.get(0);
         avgScore = avgFind(numStudents, scores);
         mostLessScore = repeatFind(scores).toString();
-
-        System.out.println(maxScore);
+        generateFile(names, scores, maxScore, minScore, avgScore, mostLessScore);
     }
 }

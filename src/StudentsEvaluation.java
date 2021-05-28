@@ -23,7 +23,7 @@ public class StudentsEvaluation {
         myWelcome.append("|_|\\_\\  |____|  |____/   |_|   \\____/  |____|\n");
         System.out.println(myWelcome);
     }
-    
+
     public static void infoRequest(int numStudents,List<String> names, List<Double> scores){
         Scanner scan = new Scanner(System.in);
         int iterator = 0;
@@ -80,7 +80,8 @@ public class StudentsEvaluation {
         List<Double> minScoreRepeat = repeatScore.entrySet().stream().filter(x -> Objects.equals(x.getValue(), minRepeat))
                 .map(Map.Entry::getKey).collect(Collectors.toList());
         bodyInfo.append("Most repeat: "+maxScoreRepeat+"\t");
-        bodyInfo.append("Less repeat: "+minScoreRepeat+ "\n");
+        bodyInfo.append("Less repeat: "+minScoreRepeat+ "\t");
+        bodyInfo.append("repeat: "+repeatScore+ "\n");
         return bodyInfo;
     }
 
@@ -112,7 +113,12 @@ public class StudentsEvaluation {
     }
 
     public static void main(String[] args){
-        Scanner scan = new Scanner(System.in);
+        welcomePrint();
+        // ESTE ES UN COMENTARIO PARA MICHAEL
+
+
+        
+        /*Scanner scan = new Scanner(System.in);
         List<Double> scores = new ArrayList<>();
         List<Double> scoreSort = new ArrayList<>();
         List<String> names = new ArrayList<>();
@@ -127,6 +133,6 @@ public class StudentsEvaluation {
         minScore = scoreSort.get(0);
         avgScore = avgFind(numStudents, scores);
         mostLessScore = repeatFind(scores).toString();
-        generateFile(names, scores, maxScore, minScore, avgScore, mostLessScore);
+        generateFile(names, scores, maxScore, minScore, avgScore, mostLessScore);*/
     }
 }

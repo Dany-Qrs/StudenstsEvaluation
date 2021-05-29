@@ -162,7 +162,7 @@ public class StudentsEvaluation {
             System.out.println("File error: "+e.getMessage());
         }
     }
-    public static StringBuilder requestData(){
+    public static String requestData(){
         List<String> names = new ArrayList<>();
         List<Double> scores = new ArrayList<>();
         StringBuilder bodyInfo = new StringBuilder();
@@ -189,13 +189,17 @@ public class StudentsEvaluation {
                 System.out.println("The name or score is incorrect");
             }
         }
-        bodyInfo.append(saveListNames(names, scores));
-        bodyInfo.append(findAvg(numStudents, scores));
-        bodyInfo.append(sortScores(numStudents, scores));
-        bodyInfo.append(findRepeated(scores));
-        //generate a text file
-        generateFile(bodyInfo.toString());
-        return bodyInfo;
+        //processing statistics
+        if(numStudents > 0){
+            bodyInfo.append(saveListNames(names, scores));
+            bodyInfo.append(findAvg(numStudents, scores));
+            bodyInfo.append(sortScores(numStudents, scores));
+            bodyInfo.append(findRepeated(scores));
+            //generate a text file
+            generateFile(bodyInfo.toString());
+            return bodyInfo.toString();
+        }
+        return "";
     }
 
     public static void main(String[] args){
@@ -208,7 +212,7 @@ public class StudentsEvaluation {
             clearScreen();
             switch (option){
                             //fill the variable for print data
-                case "1" : statistics = requestData().toString();
+                case "1" : statistics = requestData();
                 break;
                 case "2" : if(statistics.equals("")) System.out.println("No data to display");
                             else System.out.println(statistics);
@@ -218,7 +222,6 @@ public class StudentsEvaluation {
                 default : System.out.println("The option is incorrect");
                 break;
             }
-
             if(toAsk("to clean the screen")){
                 clearScreen();
             }

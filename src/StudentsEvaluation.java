@@ -3,41 +3,54 @@
 /*Present statistics for a section of 20 students:
 min, max, avg, most repeated, less repeated.
  We need to input your name and your evaluation result*/
-import java.io.File;
 import java.io.FileWriter;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class StudentsEvaluation {
 
     public static void welcomePrint(){
-        StringBuilder myWelcome = new StringBuilder();
-        myWelcome.append(" _  _    ____    ___      _     ___     ____\n");
-        myWelcome.append("| |/ /  | || |  |  _ \\   | |  /  _  \\  | || |\n");
-        myWelcome.append("|   /   | || |  | | \\ \\  | |  | | |_|  | || |\n");
-        myWelcome.append("|  /    | || |  | |  | | | |  | |      | || |\n");
-        myWelcome.append("|  \\    | || |  | |  | | | |  | |___   | || |\n");
-        myWelcome.append("|   \\   | || |  | |_/ /  | |  | |   |  | || |\n");
-        myWelcome.append("|_|\\_\\  |____|  |____/   |_|   \\____/  |____|\n");
+        String myWelcome = "";
+        myWelcome += " _  _     ___     ___      _     ___      ___\n";
+        myWelcome += "| |/ /  /  _  \\  |  _ \\   | |  /  _  \\  /  _  \\\n";
+        myWelcome += "|   /   | | | |  | | \\ \\  | |  | | |_|  | | | |\n";
+        myWelcome += "|  /    | | | |  | |  | | | |  | |      | | | |\n";
+        myWelcome += "|  \\    | | | |  | |  | | | |  | |___   | | | |\n";
+        myWelcome += "|   \\   |  _  |  | |_/ /  | |  | |   |  |  _  |\n";
+        myWelcome += "|_|\\_\\  \\_____/  |____/   |_|   \\____/  \\_____/\n";
         System.out.println(myWelcome);
+    }
+
+    public static boolean textValid(String text, String cad){
+        String regex = cad.equals("cad") ? "^\\S[\\w\\s]+":"^[0-9]\\.[0-9]{1,2}|^[0-9]|^10|^10.00|^10.0";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        return matcher.matches();
     }
 
     public static void infoRequest(int numStudents,List<String> names, List<Double> scores){
         Scanner scan = new Scanner(System.in);
-        int iterator = 0;
-        while (iterator < numStudents){
-            System.out.println("_________________________________________________");
-            System.out.print("Estudiante: ");
-            names.add(scan.next());
-            System.out.print("Puntuación: ");
-            scores.add(scan.nextDouble());
-            iterator ++;
+        String name, score;
+        int iterator = 1;
+        while (iterator <= numStudents){
+            System.out.println(iterator+") _________________________________________");
+            System.out.print("Name: ");
+            name = scan.next();
+            System.out.print("Score: ");
+            score = scan.next();
+            if(textValid(name,"cad") && textValid(score, "decimal")){
+                names.add(name);
+                scores.add(Double.parseDouble(score));
+                iterator ++;
+            }else{
+                System.out.println("The name or score is incorrect");
+            }
         }
     }
 
-    public static List arraySort(int numStudents, List<Double> scores){
+    public static List<Double> arraySort(int numStudents, List<Double> scores){
         List<Double> scoreSort = new ArrayList<>();
         Double[] scoreAux = new Double[numStudents];
         scoreAux= scores.toArray(scoreAux);
@@ -79,9 +92,8 @@ public class StudentsEvaluation {
                                     .map(Map.Entry::getKey).collect(Collectors.toList());
         List<Double> minScoreRepeat = repeatScore.entrySet().stream().filter(x -> Objects.equals(x.getValue(), minRepeat))
                 .map(Map.Entry::getKey).collect(Collectors.toList());
-        bodyInfo.append("Most repeat: "+maxScoreRepeat+"\t");
-        bodyInfo.append("Less repeat: "+minScoreRepeat+ "\t");
-        bodyInfo.append("repeat: "+repeatScore+ "\n");
+        bodyInfo.append("Most repeat: ").append(maxScoreRepeat).append("\t");
+        bodyInfo.append("Less repeat: ").append(minScoreRepeat).append("\t");
         return bodyInfo;
     }
 
@@ -89,15 +101,15 @@ public class StudentsEvaluation {
         StringBuilder bodyInfo = new StringBuilder();
         Iterator<String> name = names.iterator();
         Iterator<Double> score = scores.iterator();
-        bodyInfo.append("STUDENTS SCORES\n");
+        bodyInfo.append("NAME\tEVALUATION RESULT\n");
         while (name.hasNext() && score.hasNext()){
-            bodyInfo.append(name.next()+" ");
-            bodyInfo.append(score.next()+"\n");
+            bodyInfo.append(name.next()).append("\t");
+            bodyInfo.append(score.next()).append("\n");
         }
-        bodyInfo.append("\nSTADISTICS\n");
-        bodyInfo.append("Avg: "+avgScore+"\t");
-        bodyInfo.append("Min: "+minScore+"\t");
-        bodyInfo.append("Max: "+maxScore+"\t");
+        bodyInfo.append("\nSTATISTICS\n");
+        bodyInfo.append("Avg: ").append(avgScore).append("\t");
+        bodyInfo.append("Min: ").append(minScore).append("\t");
+        bodyInfo.append("Max: ").append(maxScore).append("\t");
         bodyInfo.append(repeatScore);
         return bodyInfo;
     }
@@ -108,24 +120,20 @@ public class StudentsEvaluation {
             dataFile.write(infoBuilder(names, scores, maxScore, minScore, avgScore, repeatScore).toString());
             dataFile.close();
         } catch (Exception e) {
-            System.out.println("Se produjo un error al generar el archivo: "+e.getMessage());
+            System.out.println("File error: "+e.getMessage());
         }
     }
 
     public static void main(String[] args){
         welcomePrint();
-        // ESTE ES UN COMENTARIO PARA MICHAEL
-
-
-        // COMENTARIO 22222222222222222222222 ***************************************************
-        /*Scanner scan = new Scanner(System.in);
+        Scanner scan = new Scanner(System.in);
         List<Double> scores = new ArrayList<>();
-        List<Double> scoreSort = new ArrayList<>();
+        List<Double> scoreSort;
         List<String> names = new ArrayList<>();
         String mostLessScore;
         double minScore, maxScore, avgScore;
         int numStudents;
-        System.out.print("Cantidad de alumnos: ");
+        System.out.print("Numbers of Students: ");
         numStudents = scan.nextInt();
         infoRequest(numStudents, names, scores);
         scoreSort = arraySort(numStudents, scores);
@@ -133,6 +141,6 @@ public class StudentsEvaluation {
         minScore = scoreSort.get(0);
         avgScore = avgFind(numStudents, scores);
         mostLessScore = repeatFind(scores).toString();
-        generateFile(names, scores, maxScore, minScore, avgScore, mostLessScore);*/
+        generateFile(names, scores, maxScore, minScore, avgScore, mostLessScore);
     }
 }

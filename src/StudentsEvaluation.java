@@ -4,15 +4,22 @@
 min, max, avg, most repeated, less repeated.
  We need to input your name and your evaluation result*/
 import java.io.FileWriter;
-import java.util.*;
+import java.util.Scanner;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class StudentsEvaluation {
     private static final Scanner scan = new Scanner(System.in);
-
     public static void printWelcome(){
+        //variable for concatenation of "Kodigo"
         String myWelcome = "";
         myWelcome += " _  _     ___     ___      _     ___      ___\n";
         myWelcome += "| |/ /  /  _  \\  |  _ \\   | |  /  _  \\  /  _  \\\n";
@@ -24,11 +31,13 @@ public class StudentsEvaluation {
         System.out.println(myWelcome);
     }
     public static void clearScreen(){
+        //bucle for print spaces
         for(int i=0; i<50; i++){
             System.out.println();
         }
     }
     public static String chooseMenuOption(){
+        //variable to get the menu option
         String option;
         System.out.println("GRADE EVALUATION");
         System.out.println("CHOOSE A OPTION");
@@ -39,6 +48,7 @@ public class StudentsEvaluation {
         return option;
     }
     public static  boolean toAsk(String text){
+        //variable to return True if it matches regex
         String exit;
         System.out.print("Do you want " + text +"? (y/yes) ");
         exit = scan.nextLine();
@@ -48,6 +58,7 @@ public class StudentsEvaluation {
     }
     public static boolean validate(String text, String dataType){
         String regex = "";
+        //regex matches names("Daniela", "Daniela Cruz", etc), decimals 0.1-10.00 and integer
         switch (dataType){
             case "capital" -> regex = "^([A-ZÁ-Ú][a-záéíóú]+)(\\s[A-ZÁ-Ú][a-záéíóú]+)*";
             case "decimal" -> regex = "^[0-9]\\.[0-9]{1,2}|^[0-9]|^10|^10.00|^10.0";
@@ -60,10 +71,13 @@ public class StudentsEvaluation {
     public static StringBuilder sortScores(int len, List<Double> scores){
         StringBuilder bodyInfo = new StringBuilder();
         Double[] sorted = new Double[len];
+        //convert ArrayList to Array
         scores.toArray(sorted);
+        //bubble method
         for(int i=0; i < len -1; i++){
             for(int j=i+1; j< len; j++){
                 if(sorted[i] > sorted[j]){
+                    //auxiliary for not lose the value
                     double aux = sorted[i];
                     sorted[i]= sorted[j];
                     sorted[j] = aux;
@@ -80,6 +94,7 @@ public class StudentsEvaluation {
         for(double score: scores){
             avg += score;
         }
+        //after accumulating, average grades
         bodyInfo = "Avg: "+String.format("%.2f", avg/numStudents)+"\t";
         return bodyInfo;
     }
@@ -88,6 +103,7 @@ public class StudentsEvaluation {
         Map<Double, Integer> repeated = new HashMap<>();
         int maxRepeated;
         int minRepeated;
+        //if the key exists, accumulate, else initialize
         for(double aux: scores){
             if(repeated.containsKey(aux)){
                 repeated.put(aux, repeated.get(aux)+1);
@@ -95,20 +111,27 @@ public class StudentsEvaluation {
                 repeated.put(aux, 1);
             }
         }
+        //find the maximum value
         maxRepeated = Collections.max(repeated.values());
+        //find the minimum value
         minRepeated = Collections.min(repeated.values());
+        //find the key of the maximum value
         List<Double> mostRepeat = repeated.entrySet().stream().filter(x -> Objects.equals(x.getValue(), maxRepeated))
                 .map(Map.Entry::getKey).collect(Collectors.toList());
+        //find the key of the minimum value
         List<Double> lessRepeat = repeated.entrySet().stream().filter(x -> Objects.equals(x.getValue(), minRepeated))
                 .map(Map.Entry::getKey).collect(Collectors.toList());
         bodyInfo.append("Most repeat: ");
+        //iterate to print in order (the most repeat)
         for (double most: mostRepeat){
             bodyInfo.append(most).append(", ");
         }
         bodyInfo.append("\tLess repeat: ");
+        //iterate to print in order (the less repeat)
         for(double less: lessRepeat){
             bodyInfo.append(less).append(", ");
         }
+        //iterate to print in order (all repeats)
         bodyInfo.append("\nRepetitions:\n");
         for (Map.Entry<Double, Integer> rep: repeated.entrySet()){
             bodyInfo.append(rep.getKey()).append(" :: ").append(rep.getValue()).append(" a times\n");
@@ -120,6 +143,7 @@ public class StudentsEvaluation {
         Iterator<String> name = names.iterator();
         Iterator<Double> score = scores.iterator();
         bodyInfo.append("NAME\tEVALUATION RESULT\n");
+        //iterate to print in order (names, scores)
         while (name.hasNext() && score.hasNext()){
             bodyInfo.append(name.next()).append("\t");
             bodyInfo.append(score.next()).append("\n");
@@ -148,6 +172,7 @@ public class StudentsEvaluation {
         String score;
         System.out.print("Numbers of Students: ");
         name = scan.nextLine();
+        //validate "numbers of students" to integer
         numStudents = validate(name, "number")? Integer.parseInt(name): 0;
         while (iterator <= numStudents){
             System.out.println(iterator+") _________________________________________");
@@ -155,6 +180,7 @@ public class StudentsEvaluation {
             name = scan.nextLine();
             System.out.print("Score: ");
             score = scan.nextLine();
+            //validate "name" and "score"
             if(validate(name,"capital") && validate(score, "decimal")){
                 scores.add(Double.parseDouble(score));
                 names.add(name);
@@ -167,11 +193,13 @@ public class StudentsEvaluation {
         bodyInfo.append(findAvg(numStudents, scores));
         bodyInfo.append(sortScores(numStudents, scores));
         bodyInfo.append(findRepeated(scores));
+        //generate a text file
         generateFile(bodyInfo.toString());
         return bodyInfo;
     }
 
     public static void main(String[] args){
+        //variable for print data
         String statistics = "";
         String option;
         printWelcome();
@@ -179,6 +207,7 @@ public class StudentsEvaluation {
             option = chooseMenuOption();
             clearScreen();
             switch (option){
+                            //fill the variable for print data
                 case "1" : statistics = requestData().toString();
                 break;
                 case "2" : if(statistics.equals("")) System.out.println("No data to display");

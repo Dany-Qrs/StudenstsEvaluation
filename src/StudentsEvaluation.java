@@ -18,13 +18,13 @@ public class StudentsEvaluation {
         myWelcome += "|   /   | | | |  | | \\ \\  | |  | | |_|  | | | |\n";
         myWelcome += "|  /    | | | |  | |  | | | |  | |      | | | |\n";
         myWelcome += "|  \\    | | | |  | |  | | | |  | |___   | | | |\n";
-        myWelcome += "|   \\   |  _  |  | |_/ /  | |  | |   |  |  _  |\n";
-        myWelcome += "|_|\\_\\  \\_____/  |____/   |_|   \\____/  \\_____/\n";
+        myWelcome += "|   \\   | !_! |  | |_/ /  | |  | |   |  | !_! |\n";
+        myWelcome += "|_|\\_\\  \\ ___ /  |____/   |_|   \\____/  \\ ___ /\n";
         System.out.println(myWelcome);
     }
 
     public static boolean textValid(String text, String cad){
-        String regex = cad.equals("cad") ? "^\\S[\\w\\s]+":"^[0-9]\\.[0-9]{1,2}|^[0-9]|^10|^10.00|^10.0";
+        String regex = cad.equals("cad") ? "^([A-ZÁ-Ú][a-záéíóú]+)(\\s[A-ZÁ-Ú][a-záéíóú]+)*":"^[0-9]\\.[0-9]{1,2}|^[0-9]|^10|^10.00|^10.0";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
         return matcher.matches();
@@ -37,9 +37,9 @@ public class StudentsEvaluation {
         while (iterator <= numStudents){
             System.out.println(iterator+") _________________________________________");
             System.out.print("Name: ");
-            name = scan.next();
+            name = scan.nextLine();
             System.out.print("Score: ");
-            score = scan.next();
+            score = scan.nextLine();
             if(textValid(name,"cad") && textValid(score, "decimal")){
                 names.add(name);
                 scores.add(Double.parseDouble(score));
